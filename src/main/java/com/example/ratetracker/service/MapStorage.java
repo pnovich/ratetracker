@@ -1,5 +1,6 @@
-package com.example.ratetracker;
+package com.example.ratetracker.service;
 
+import com.example.ratetracker.dto.ExchangeRateResponseDto;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;

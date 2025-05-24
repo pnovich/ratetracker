@@ -1,5 +1,6 @@
-package com.example.ratetracker;
+package com.example.ratetracker.api;
 
+import com.example.ratetracker.dto.ApiResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
 

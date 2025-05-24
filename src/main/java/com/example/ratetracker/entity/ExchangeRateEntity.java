@@ -1,4 +1,4 @@
-package com.example.ratetracker;
+package com.example.ratetracker.entity;
 
 import jakarta.persistence.*;
 

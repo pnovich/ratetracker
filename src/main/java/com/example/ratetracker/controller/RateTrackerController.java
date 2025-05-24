@@ -1,5 +1,9 @@
-package com.example.ratetracker;
+package com.example.ratetracker.controller;
 
+import com.example.ratetracker.dto.CurrencyRequestDto;
+import com.example.ratetracker.dto.CurrencyResponseDto;
+import com.example.ratetracker.dto.ExchangeRateResponseDto;
+import com.example.ratetracker.service.RatetrackerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,4 +1,4 @@
-package com.example.ratetracker;
+package com.example.ratetracker.service;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

@@ -1,5 +1,13 @@
-package com.example.ratetracker;
+package com.example.ratetracker.service;
 
+import com.example.ratetracker.api.ApiExtractor;
+import com.example.ratetracker.dto.ApiResponseDto;
+import com.example.ratetracker.dto.CurrencyResponseDto;
+import com.example.ratetracker.dto.ExchangeRateResponseDto;
+import com.example.ratetracker.entity.CurrencyEntity;
+import com.example.ratetracker.entity.ExchangeRateEntity;
+import com.example.ratetracker.repository.CurrencyEntityRepository;
+import com.example.ratetracker.repository.ExchangeRateEntityRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;

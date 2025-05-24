@@ -1,4 +1,4 @@
-package com.example.ratetracker;
+package com.example.ratetracker.dto;
 
 import java.util.Set;
 

@@ -1,4 +1,6 @@
-package com.example.ratetracker;
+package com.example.ratetracker.api;
+
+import com.example.ratetracker.dto.ApiResponseDto;
 
 import java.util.Map;
 import java.util.Set;

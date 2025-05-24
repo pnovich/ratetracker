@@ -59,4 +59,15 @@ public class ApiResponseDto {
     public void setRates(Map<String, Double> rates) {
         this.rates = rates;
     }
+
+    @Override
+    public String toString() {
+        return "ApiResponseDto{" +
+                "disclaimer='" + disclaimer + '\'' +
+                ", license='" + license + '\'' +
+                ", timestamp=" + timestamp +
+                ", base='" + base + '\'' +
+                ", rates=" + rates +
+                '}';
+    }
 }

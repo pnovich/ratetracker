@@ -83,23 +83,13 @@ public class RatetrackerService {
         Map<String, ExchangeRateResponseDto> ratesMap = mapFromApiResponseToExchangeRateDto(apiResponseDtoMap);
         this.mapStorage.refreshMap();
         this.mapStorage.setStorage(ratesMap);
+        System.out.println("ratesMap: " + this.mapStorage.getStorage());
     }
 
     public  ExchangeRateEntity mapFromApiResponseToExchangeRateEntity(
-//            String jsonResponse
-            ApiResponseDto apiResponseDto
-    ) throws Exception {
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        JsonNode rootNode = objectMapper.readTree(jsonResponse);
-//
-//        String baseCurrency = rootNode.get("base").asText();
-//        long timestamp = rootNode.get("timestamp").asLong();
+            ApiResponseDto apiResponseDto)  {
 
         Map<String, Double> rates = apiResponseDto.getRates();
-//                objectMapper.convertValue(
-//                rootNode.get("rates"), Map.class
-//        );
-
 
         ExchangeRateEntity exchangeRate = new ExchangeRateEntity();
         exchangeRate.setBaseCurrency(new CurrencyEntity(apiResponseDto.getBase()));

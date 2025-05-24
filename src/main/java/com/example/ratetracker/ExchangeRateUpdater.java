@@ -7,8 +7,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class ExchangeRateUpdater {
@@ -31,10 +33,32 @@ public class ExchangeRateUpdater {
     public void fetchExchangeRates() throws Exception {
         List<String> currencyValues = ratetrackerService.getCurrencyValues();
         Map<String,ApiResponseDto> apiResponseDtoMap = extractor.getMapFromApi(currencyValues);
-        ratetrackerService.updateExchangeRates(apiResponseDtoMap);
+        Map<String, ApiResponseDto> filteredMap = filterMap(apiResponseDtoMap,currencyValues);
+        ratetrackerService.updateExchangeRates(filteredMap);
         System.out.println("database updated");
-        ratetrackerService.updateMapStorageFromApiResponse(apiResponseDtoMap);
+        ratetrackerService.updateMapStorageFromApiResponse(filteredMap);
         System.out.println("map updated");
+    }
+
+    private Map<String,ApiResponseDto> filterMap(Map<String,ApiResponseDto> inputMap,
+                                                 List<String> currencies) {
+        Map<String, ApiResponseDto> filteredMap =
+                new HashMap<>();
+        for (Map.Entry<String, ApiResponseDto> dtoInputMapEntry : inputMap.entrySet()) {
+            ApiResponseDto current = dtoInputMapEntry.getValue();
+            ApiResponseDto newDto = new ApiResponseDto();
+            newDto.setBase(current.getBase());
+            newDto.setDisclaimer(current.getDisclaimer());
+            newDto.setLicense(current.getLicense());
+            newDto.setTimestamp(current.getTimestamp());
+            Map<String, Double> newRates = current.getRates().entrySet()
+                    .stream()
+                    .filter(e -> currencies.contains(e.getKey()))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            newDto.setRates(newRates);
+            filteredMap.put(dtoInputMapEntry.getKey(), newDto);
+        }
+        return filteredMap;
     }
 
 }

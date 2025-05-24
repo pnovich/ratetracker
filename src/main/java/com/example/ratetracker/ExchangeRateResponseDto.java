@@ -21,4 +21,12 @@ public class ExchangeRateResponseDto {
     public Map<String, Double> getRates() {
         return rates;
     }
+
+    @Override
+    public String toString() {
+        return "ExchangeRateResponseDto{" +
+                "name='" + name + '\'' +
+                ", rates=" + rates +
+                '}';
+    }
 }

@@ -1,6 +1,5 @@
 package com.example.ratetracker;
 
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,17 +21,6 @@ public class RatetrackerService {
     private List<String> currencies = new ArrayList<>();
     private ExchangeRateResponseDto mockRates;
 
-    @PostConstruct
-    private void init() {
-        currencies = new ArrayList<>();
-        Map<String, Double> rates = new HashMap<>();
-        rates.put("EUR", 1.1);
-        rates.put("GBP", 1.2);
-        rates.put("JPY", 0.9);
-        String base = "USD";
-        mockRates = new ExchangeRateResponseDto(base, rates);
-
-    }
     public ExchangeRateResponseDto getRateForCurrency(String currency) {
 //        return this.mockRates;
         if (!currencies.contains(currency)) {
@@ -141,12 +129,12 @@ public class RatetrackerService {
             Map<String, Double> newRates = current.getRates().entrySet()
                     .stream()
                     .filter(e -> currencies.contains(e.getKey()))
+                    .filter(e-> !Objects.equals(e.getKey(), current.getBase()))
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
             newDto.setRates(newRates);
             filteredMap.put(dtoInputMapEntry.getKey(), newDto);
         }
         return filteredMap;
     }
-
 
 }

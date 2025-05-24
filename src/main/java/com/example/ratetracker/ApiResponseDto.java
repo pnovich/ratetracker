@@ -70,4 +70,5 @@ public class ApiResponseDto {
                 ", rates=" + rates +
                 '}';
     }
+
 }

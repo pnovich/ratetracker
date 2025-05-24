@@ -1,7 +1,7 @@
 package com.example.ratetracker;
+
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 
 @Component
@@ -9,7 +9,7 @@ public class ExchangeRateUpdater {
 
     private final RatetrackerService ratetrackerService;
 
-    public ExchangeRateUpdater(RestTemplate restTemplate, RatetrackerService ratetrackerService, ApiExtractor extractor) {
+    public ExchangeRateUpdater(RatetrackerService ratetrackerService) {
         this.ratetrackerService = ratetrackerService;
     }
 

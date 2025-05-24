@@ -4,5 +4,5 @@ import java.util.List;
 import java.util.Map;
 
 public interface ApiExtractor {
-    public Map<String,ApiResponseDto> getMapFromApi(List<String> currencyValues);
+    Map<String, ApiResponseDto> getMapFromApi(List<String> currencyValues);
 }

@@ -12,4 +12,5 @@ public class CurrencyRequestDto {
     public void setCurrencyCode(String currencyCode) {
         this.currencyCode = currencyCode;
     }
+
 }

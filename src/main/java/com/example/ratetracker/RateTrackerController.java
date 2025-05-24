@@ -1,6 +1,5 @@
 package com.example.ratetracker;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,11 +7,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/exchange")
 @RestController
 public class RateTrackerController {
-    @Autowired
-    RatetrackerService ratetrackerService;
+    private final RatetrackerService ratetrackerService;
+
+    public RateTrackerController(RatetrackerService ratetrackerService) {
+        this.ratetrackerService = ratetrackerService;
+    }
+
     @GetMapping("/")
-    public String home() {
-        return "Api works";
+    public ResponseEntity<String> home() {
+        return ResponseEntity.status(HttpStatus.CREATED).body("Api works");
     }
 
     @GetMapping("/rates/{currency}")
@@ -35,4 +38,5 @@ public class RateTrackerController {
         ratetrackerService.addCurrency(request.getCurrencyCode());
         return ResponseEntity.status(HttpStatus.CREATED).body("Currency added successfully");
     }
+
 }

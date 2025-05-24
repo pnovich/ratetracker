@@ -1,5 +1,7 @@
 package com.example.ratetracker;
+
 import jakarta.persistence.*;
+
 import java.time.Instant;
 import java.util.Map;
 
@@ -54,4 +56,5 @@ public class ExchangeRateEntity {
     public void setTimestamp(Instant timestamp) {
         this.timestamp = timestamp;
     }
+
 }

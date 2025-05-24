@@ -1,4 +1,5 @@
 package com.example.ratetracker;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -23,4 +24,5 @@ public class CurrencyEntity {
     public void setCurrencyCode(String currencyCode) {
         this.currencyCode = currencyCode;
     }
+
 }

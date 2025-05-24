@@ -12,4 +12,5 @@ public class CurrencyResponseDto {
     public List<String> getCurrencies() {
         return currencies;
     }
+
 }

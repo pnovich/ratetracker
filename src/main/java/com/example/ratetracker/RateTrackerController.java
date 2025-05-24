@@ -31,7 +31,7 @@ public class RateTrackerController {
 
     @PostMapping("/currencies")
     public ResponseEntity<String> postCurrencies(
-            @RequestBody CurrencyRequestDto request) {
+            @RequestBody CurrencyRequestDto request) throws Exception {
         ratetrackerService.addCurrency(request.getCurrencyCode());
         return ResponseEntity.status(HttpStatus.CREATED).body("Currency added successfully");
     }

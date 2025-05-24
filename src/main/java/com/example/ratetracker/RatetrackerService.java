@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class RatetrackerService {
@@ -15,6 +16,9 @@ public class RatetrackerService {
     ExchangeRateEntityRepository exchangeRateEntityRepository;
     @Autowired
     MapStorage mapStorage;
+    @Autowired
+    private ApiExtractor extractor;
+
     private List<String> currencies = new ArrayList<>();
     private ExchangeRateResponseDto mockRates;
 
@@ -52,11 +56,12 @@ public class RatetrackerService {
         return this.currencies;
     }
 
-    public void addCurrency(String currency) {
+    public void addCurrency(String currency) throws Exception {
         this.currencies.add(currency);
+        this.fetchExchangeRates();
     }
 
-    public void updateExchangeRates(Map<String,ApiResponseDto> apiResponseDtoMap) throws Exception {
+    public void updateExchangeRatesInDatabase(Map<String,ApiResponseDto> apiResponseDtoMap) throws Exception {
        Map<String, ExchangeRateEntity> entities = new HashMap<>();
 //       List<CurrencyEntity> currencies = this.currencyEntityRepository.findAll();
        for (Map.Entry<String, ApiResponseDto> entry : apiResponseDtoMap.entrySet()) {
@@ -111,5 +116,37 @@ public class RatetrackerService {
         }
         return exchangeRateResponseDtoMap;
     }
+
+    public void fetchExchangeRates() throws Exception {
+        List<String> currencyValues = this.getCurrencyValues();
+        Map<String,ApiResponseDto> apiResponseDtoMap = extractor.getMapFromApi(currencyValues);
+        Map<String, ApiResponseDto> filteredMap = filterMap(apiResponseDtoMap,currencyValues);
+        this.updateExchangeRatesInDatabase(filteredMap);
+        System.out.println("database updated");
+        this.updateMapStorageFromApiResponse(filteredMap);
+        System.out.println("map updated");
+    }
+
+    private Map<String,ApiResponseDto> filterMap(Map<String,ApiResponseDto> inputMap,
+                                                 List<String> currencies) {
+        Map<String, ApiResponseDto> filteredMap =
+                new HashMap<>();
+        for (Map.Entry<String, ApiResponseDto> dtoInputMapEntry : inputMap.entrySet()) {
+            ApiResponseDto current = dtoInputMapEntry.getValue();
+            ApiResponseDto newDto = new ApiResponseDto();
+            newDto.setBase(current.getBase());
+            newDto.setDisclaimer(current.getDisclaimer());
+            newDto.setLicense(current.getLicense());
+            newDto.setTimestamp(current.getTimestamp());
+            Map<String, Double> newRates = current.getRates().entrySet()
+                    .stream()
+                    .filter(e -> currencies.contains(e.getKey()))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            newDto.setRates(newRates);
+            filteredMap.put(dtoInputMapEntry.getKey(), newDto);
+        }
+        return filteredMap;
+    }
+
 
 }

@@ -1,12 +1,20 @@
 package com.example.ratetracker;
 
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.*;
 
 @Service
 public class RatetrackerService {
+    @Autowired
+    CurrencyEntityRepository currencyEntityRepository;
+    @Autowired
+    ExchangeRateEntityRepository exchangeRateEntityRepository;
+    @Autowired
+    MapStorage mapStorage;
     private List<String> currencies = new ArrayList<>();
     private ExchangeRateResponseDto mockRates;
 
@@ -22,7 +30,16 @@ public class RatetrackerService {
 
     }
     public ExchangeRateResponseDto getRateForCurrency(String currency) {
-        return this.mockRates;
+//        return this.mockRates;
+        if (!currencies.contains(currency)) {
+            throw new RuntimeException("Currencies do not match");
+        }
+        ExchangeRateResponseDto reult = this.mapStorage.getStorage().get(currency);
+        if (reult != null) {
+            return reult;
+        } else {
+            throw new RuntimeException("Can`t find currencies for currency " + currency);
+        }
     }
 
     public CurrencyResponseDto getCurrencies() {
@@ -31,7 +48,78 @@ public class RatetrackerService {
         return currencyResponseDto;
     }
 
+    public List<String> getCurrencyValues() {
+        return this.currencies;
+    }
+
     public void addCurrency(String currency) {
         this.currencies.add(currency);
     }
+
+    public void updateExchangeRates(Map<String,ApiResponseDto> apiResponseDtoMap) throws Exception {
+       Map<String, ExchangeRateEntity> entities = new HashMap<>();
+//       List<CurrencyEntity> currencies = this.currencyEntityRepository.findAll();
+       for (Map.Entry<String, ApiResponseDto> entry : apiResponseDtoMap.entrySet()) {
+           String currency = entry.getKey();
+           ApiResponseDto apiResponseDto = entry.getValue();
+
+           ExchangeRateEntity exchangeRateEntity = mapFromApiResponseToExchangeRateEntity(apiResponseDto);
+
+           CurrencyEntity currencyEntity = this.currencyEntityRepository.findByCurrencyCode(currency);
+
+           if (currencyEntity == null) {
+               currencyEntity = new CurrencyEntity(currency);
+               currencyEntityRepository.save(currencyEntity);
+           }
+
+           exchangeRateEntity.setBaseCurrency(currencyEntity);
+
+           exchangeRateEntityRepository.save(exchangeRateEntity);
+       }
+    }
+
+    public void updateMapStorageFromApiResponse(Map<String,ApiResponseDto> apiResponseDtoMap) throws Exception {
+
+        Map<String, ExchangeRateResponseDto> ratesMap = mapFromApiResponseToExchangeRateDto(apiResponseDtoMap);
+        this.mapStorage.refreshMap();
+        this.mapStorage.setStorage(ratesMap);
+    }
+
+    public  ExchangeRateEntity mapFromApiResponseToExchangeRateEntity(
+//            String jsonResponse
+            ApiResponseDto apiResponseDto
+    ) throws Exception {
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        JsonNode rootNode = objectMapper.readTree(jsonResponse);
+//
+//        String baseCurrency = rootNode.get("base").asText();
+//        long timestamp = rootNode.get("timestamp").asLong();
+
+        Map<String, Double> rates = apiResponseDto.getRates();
+//                objectMapper.convertValue(
+//                rootNode.get("rates"), Map.class
+//        );
+
+
+        ExchangeRateEntity exchangeRate = new ExchangeRateEntity();
+        exchangeRate.setBaseCurrency(new CurrencyEntity(apiResponseDto.getBase()));
+        exchangeRate.setRates(rates);
+        exchangeRate.setTimestamp(Instant.ofEpochSecond(apiResponseDto.getTimestamp()));
+
+        return exchangeRate;
+    }
+
+    public Map<String, ExchangeRateResponseDto> mapFromApiResponseToExchangeRateDto(
+            Map<String, ApiResponseDto> apiResponseDtoMap) throws Exception {
+        Map<String, ExchangeRateResponseDto> exchangeRateResponseDtoMap = new HashMap<>();
+        for (Map.Entry<String, ApiResponseDto> entry : apiResponseDtoMap.entrySet()) {
+            String currency = entry.getKey();
+            ApiResponseDto apiResponseDto = entry.getValue();
+            Map<String, Double> rates = apiResponseDto.getRates();
+            ExchangeRateResponseDto exchangeRateResponseDto = new ExchangeRateResponseDto(currency, rates);
+            exchangeRateResponseDtoMap.put(currency, exchangeRateResponseDto);
+        }
+        return exchangeRateResponseDtoMap;
+    }
+
 }

@@ -4,13 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Component
 public class ApiExtractorFromJson implements ApiExtractor {
     @Override
-    public Map<String, ApiResponseDto> getMapFromApi(List<String> currencyValues) {
+    public Map<String, ApiResponseDto> getMapFromApi(Set<String> currencyValues) {
         Map<String, ApiResponseDto> map = new HashMap<>();
         for (String currencyValue : currencyValues) {
             ApiResponseDto dto = getApiResponseFromJson();
@@ -30,7 +30,6 @@ public class ApiExtractorFromJson implements ApiExtractor {
         } catch (Exception e) {
             throw new RuntimeException("Error parsing JSON", e);
         }
-
     }
 
 }

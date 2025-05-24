@@ -12,7 +12,7 @@ public class RatetrackerService {
     private final ExchangeRateEntityRepository exchangeRateEntityRepository;
     private final MapStorage mapStorage;
     private final ApiExtractor extractor;
-    private final List<String> currencies = new ArrayList<>();
+    private final Set<String> currencies = new HashSet<>();
 
     public RatetrackerService(CurrencyEntityRepository currencyEntityRepository, ExchangeRateEntityRepository exchangeRateEntityRepository, MapStorage mapStorage, ApiExtractor extractor) {
         this.currencyEntityRepository = currencyEntityRepository;
@@ -34,12 +34,12 @@ public class RatetrackerService {
     }
 
     public CurrencyResponseDto getCurrencies() {
-        List<String> currencies = this.currencies;
+        Set<String> currencies = this.currencies;
         CurrencyResponseDto currencyResponseDto = new CurrencyResponseDto(currencies);
         return currencyResponseDto;
     }
 
-    public List<String> getCurrencyValues() {
+    public Set<String> getCurrencyValues() {
         return this.currencies;
     }
 
@@ -49,7 +49,7 @@ public class RatetrackerService {
     }
 
     public void fetchExchangeRates() throws Exception {
-        List<String> currencyValues = this.getCurrencyValues();
+        Set<String> currencyValues = this.getCurrencyValues();
         Map<String, ApiResponseDto> apiResponseDtoMap = extractor.getMapFromApi(currencyValues);
         Map<String, ApiResponseDto> filteredMap = filterMap(apiResponseDtoMap, currencyValues);
         this.updateExchangeRatesInDatabase(filteredMap);
@@ -59,8 +59,7 @@ public class RatetrackerService {
     }
 
 
-    private void updateExchangeRatesInDatabase(Map<String, ApiResponseDto> apiResponseDtoMap) throws Exception {
-        Map<String, ExchangeRateEntity> entities = new HashMap<>();
+    private void updateExchangeRatesInDatabase(Map<String, ApiResponseDto> apiResponseDtoMap) {
         for (Map.Entry<String, ApiResponseDto> entry : apiResponseDtoMap.entrySet()) {
             String currency = entry.getKey();
             ApiResponseDto apiResponseDto = entry.getValue();
@@ -102,7 +101,7 @@ public class RatetrackerService {
     }
 
     private Map<String, ExchangeRateResponseDto> mapFromApiResponseToExchangeRateDto(
-            Map<String, ApiResponseDto> apiResponseDtoMap) throws Exception {
+            Map<String, ApiResponseDto> apiResponseDtoMap) {
         Map<String, ExchangeRateResponseDto> exchangeRateResponseDtoMap = new HashMap<>();
         for (Map.Entry<String, ApiResponseDto> entry : apiResponseDtoMap.entrySet()) {
             String currency = entry.getKey();
@@ -115,7 +114,7 @@ public class RatetrackerService {
     }
 
     private Map<String, ApiResponseDto> filterMap(Map<String, ApiResponseDto> inputMap,
-                                                  List<String> currencies) {
+                                                  Set<String> currencies) {
         Map<String, ApiResponseDto> filteredMap =
                 new HashMap<>();
         for (Map.Entry<String, ApiResponseDto> dtoInputMapEntry : inputMap.entrySet()) {

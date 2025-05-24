@@ -1,15 +1,15 @@
 package com.example.ratetracker;
 
-import java.util.List;
+import java.util.Set;
 
 public class CurrencyResponseDto {
-    private List<String> currencies;
+    private Set<String> currencies;
 
-    public CurrencyResponseDto(List<String> currencies) {
+    public CurrencyResponseDto(Set<String> currencies) {
         this.currencies = currencies;
     }
 
-    public List<String> getCurrencies() {
+    public Set<String> getCurrencies() {
         return currencies;
     }
 

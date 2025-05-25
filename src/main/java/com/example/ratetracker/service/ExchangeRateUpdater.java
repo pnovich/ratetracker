@@ -17,8 +17,8 @@ public class ExchangeRateUpdater {
     }
 
     @Scheduled(
-//            fixedRate = 3600000
-            fixedRate = 60000
+            fixedRate = 3600000
+//     for testing  fixedRate = 60000
 
     )
     public void doScheduledRatesFetching() throws Exception {

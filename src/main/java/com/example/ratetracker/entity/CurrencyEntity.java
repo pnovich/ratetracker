@@ -5,8 +5,8 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "currencies")
 public class CurrencyEntity {
-
     @Id
+    @Column(name = "currency_code", nullable = false, unique = true)
     private String currencyCode;
 
     public CurrencyEntity(String currencyCode) {

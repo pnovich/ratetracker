@@ -8,7 +8,6 @@ import java.util.Map;
 @Entity
 @Table(name = "exchange_rates")
 public class ExchangeRateEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,7 +23,6 @@ public class ExchangeRateEntity {
     private Map<String, Double> rates;
 
     private Instant timestamp;
-
     public Map<String, Double> getRates() {
         return rates;
     }

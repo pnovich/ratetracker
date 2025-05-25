@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import io.swagger.v3.oas.models.OpenAPI;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
 public class AppConfig {
@@ -28,11 +27,6 @@ public class AppConfig {
         } else {
             return new ApiExtractorFromJson();
         }
-    }
-
-    @Bean
-    public WebClient webClient() {
-        return WebClient.builder().build();
     }
 
     @Bean

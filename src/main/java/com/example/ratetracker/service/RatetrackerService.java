@@ -59,6 +59,10 @@ public class RatetrackerService {
         this.fetchExchangeRates();
     }
 
+    public MapStorage getMapStorage() {
+        return mapStorage;
+    }
+
     public void fetchExchangeRates() throws Exception {
         Set<String> currencyValues = this.getCurrencyValues();
         Map<String, ApiResponseDto> apiResponseDtoMap = extractor.getMapFromApi(currencyValues);

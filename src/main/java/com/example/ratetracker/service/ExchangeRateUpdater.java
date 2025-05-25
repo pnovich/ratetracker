@@ -1,5 +1,7 @@
 package com.example.ratetracker.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Component;
 public class ExchangeRateUpdater {
 
     private final RatetrackerService ratetrackerService;
+    private final Logger logger = LoggerFactory.getLogger(ExchangeRateUpdater.class);
 
     public ExchangeRateUpdater(RatetrackerService ratetrackerService) {
         this.ratetrackerService = ratetrackerService;
@@ -19,7 +22,7 @@ public class ExchangeRateUpdater {
 
     )
     public void doScheduledRatesFetching() throws Exception {
-        System.out.println("scheduled fetching");
+        logger.info("scheduled fetching");
         ratetrackerService.fetchExchangeRates();
     }
 

@@ -8,6 +8,8 @@ import com.example.ratetracker.entity.CurrencyEntity;
 import com.example.ratetracker.entity.ExchangeRateEntity;
 import com.example.ratetracker.repository.CurrencyEntityRepository;
 import com.example.ratetracker.repository.ExchangeRateEntityRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -21,6 +23,7 @@ public class RatetrackerService {
     private final MapStorage mapStorage;
     private final ApiExtractor extractor;
     private final Set<String> currencies = new HashSet<>();
+    private final Logger logger = LoggerFactory.getLogger(RatetrackerService.class);
 
     public RatetrackerService(CurrencyEntityRepository currencyEntityRepository, ExchangeRateEntityRepository exchangeRateEntityRepository, MapStorage mapStorage, ApiExtractor extractor) {
         this.currencyEntityRepository = currencyEntityRepository;
@@ -61,9 +64,9 @@ public class RatetrackerService {
         Map<String, ApiResponseDto> apiResponseDtoMap = extractor.getMapFromApi(currencyValues);
         Map<String, ApiResponseDto> filteredMap = filterMap(apiResponseDtoMap, currencyValues);
         this.updateExchangeRatesInDatabase(filteredMap);
-        System.out.println("database updated");
+        logger.info("database updated");
         this.updateMapStorageFromApiResponse(filteredMap);
-        System.out.println("map updated");
+        logger.info("map updated");
     }
 
 
@@ -87,12 +90,12 @@ public class RatetrackerService {
         }
     }
 
-    private void updateMapStorageFromApiResponse(Map<String, ApiResponseDto> apiResponseDtoMap) throws Exception {
+    private void updateMapStorageFromApiResponse(Map<String, ApiResponseDto> apiResponseDtoMap) {
 
         Map<String, ExchangeRateResponseDto> ratesMap = mapFromApiResponseToExchangeRateDto(apiResponseDtoMap);
         this.mapStorage.refreshMap();
         this.mapStorage.setStorage(ratesMap);
-        System.out.println("ratesMap: " + this.mapStorage.getStorage());
+        logger.info("ratesMap: " + this.mapStorage.getStorage());
     }
 
     private ExchangeRateEntity mapFromApiResponseToExchangeRateEntity(
